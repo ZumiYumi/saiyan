@@ -5,7 +5,7 @@ $LDAP
 $direntry = New-Object System.DirectoryServices.DirectoryEntry($LDAP)
 
 $dirsearcher = New-Object System.DirectoryServices.DirectorySearcher($direntry)
-$dirsearcher.filter="samAccountType=805306368"
+$dirsearcher.filter = "samAccountType=805306368"
 $result = $dirsearcher.FindAll()
 
 Foreach($obj in $result)
@@ -17,6 +17,22 @@ Foreach($obj in $result)
 
     Write-Host "-------------------------------"
 }
+
+# Query the domainSid value
+$domainSearcher = New-Object System.DirectoryServices.DirectorySearcher($direntry)
+$domainSearcher.filter = "(objectClass=domainDNS)"
+$domainResult = $domainSearcher.FindOne()
+
+if ($domainResult) {
+    $domainSidBytes = $domainResult.Properties["objectsid"][0]
+    if ($domainSidBytes -is [byte[]]) {
+        $domainSid = New-Object System.Security.Principal.SecurityIdentifier($domainSidBytes, 0)
+        Write-Host "Domain SID: $domainSid"
+    } else {
+        Write-Host "Unexpected SID format."
+    }
+}
+
 function LDAPSearch {
     param (
         [string]$LDAPQuery
@@ -30,5 +46,4 @@ function LDAPSearch {
     $DirectorySearcher = New-Object System.DirectoryServices.DirectorySearcher($DirectoryEntry, $LDAPQuery)
 
     return $DirectorySearcher.FindAll()
-
 }
